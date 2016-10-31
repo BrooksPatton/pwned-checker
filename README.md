@@ -1,16 +1,23 @@
 # pwned-checker
 
-A command line tool to check if an email address has been pwned. Uses the https://haveibeenpwned.com/ api
+A command line tool to check if an email address has been pwned. Uses the <https://haveibeenpwned.com/> api
 
 # the plan
 
 This will be a terminal based application where you give your email address and it will determine if you have been pwned with that address.
 
-* Get the email address from the user
-* send http request to api
-* parse through response
-* generate a report
-* print out report
+*   [x] Get the email address from the user
+*   [x] send http request to api
+*   [ ] parse through response
+    *   [x] Host
+    *   [ ] BreachDate
+    *   [x] password compromised
+    *   [x] password hint compromised
+    *   [ ] report
+*   [x] generate a report
+*   [x] print out report
+
+## What the report will look like
 
 ```
 Pwned report for test@example.com
@@ -18,10 +25,12 @@ Pwned report for test@example.com
 Host: otherhost.com
 BreachDate: March 15, 2016
 password compromised: false
-report: http://www.troyhunt.com/2015/10/breaches-traders-plain-text-passwords.html
+Password hints compromised: true
+report: In October 2013, 153 million Adobe accounts were breached with each containing an internal ID, username, email, encrypted password and a password hint in plain text. The password cryptography was poorly done and (http://stricture-group.com/files/adobe-top100.txt) many were quickly resolved back to plain text. The unencrypted hints also (http://www.troyhunt.com/2013/11/adobe-credentials-and-serious.html) disclosed much about the passwords adding further to the risk that hundreds of millions of Adobe customers already faced.
 
 Host: 000webhost.com
 BreachDate: March 1, 2015
 password compromised: true
-report: http://www.troyhunt.com/2015/10/breaches-traders-plain-text-passwords.html
+Password hints compromised: true
+report: In October 2013, 153 million Adobe accounts were breached with each containing an internal ID, username, email, encrypted password and a password hint in plain text. The password cryptography was poorly done and (http://stricture-group.com/files/adobe-top100.txt) many were quickly resolved back to plain text. The unencrypted hints also (http://www.troyhunt.com/2013/11/adobe-credentials-and-serious.html) disclosed much about the passwords adding further to the risk that hundreds of millions of Adobe customers already faced.
 ```
