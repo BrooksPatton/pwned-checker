@@ -10,7 +10,7 @@ This will be a terminal based application where you give your email address and 
 *   [x] send http request to api
 *   [ ] parse through response
     *   [x] Host
-    *   [ ] BreachDate
+    *   [x] BreachDate
     *   [x] password compromised
     *   [x] password hint compromised
     *   [ ] report
