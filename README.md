@@ -16,12 +16,12 @@ This will be a terminal based application where you give your email address and 
     *   [x] report
 *   [x] generate a report
 *   [x] print out report
+*   [ ] tests
 *   [ ] if no email address provided, use json object as persistent storage
 *   [ ] handle multiple email addresses
 *   [ ] convert npm package so that it can be installed globally
 *   [ ] deploy to npm
 *   [ ] update readme files
-*   [ ] tests
 *   [ ] test coverage
 
 ## What the report will look like

@@ -5,7 +5,7 @@ const moment = require('moment');
 function clean(str) {
   str = str.replace(/<a href="/g, '(');
   str = str.replace(/" target="_blank" rel="noopener">/g, ') ');
-  str = str.replace(/<\/a>/g, ' ');
+  str = str.replace(/<\/a>/g, '');
   str = str.replace(/<em>/g, '');
   str = str.replace(/<\/em>/g, '');
   str = str.replace(/&quot;/g, '"');
