@@ -8,7 +8,7 @@ function clean (str) {
   str = str.replace(/<\/a>/g, '')
   str = str.replace(/<em>/g, '')
   str = str.replace(/<\/em>/g, '')
-  str = str.replace(/&quot/g, '"')
+  str = str.replace(/&quot;/g, '"')
 
   return str
 }

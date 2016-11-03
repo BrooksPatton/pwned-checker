@@ -1,11 +1,7 @@
 {
-    "extends": "standard",
+    "extends": ["standard"],
     "plugins": [
         "standard",
-        "promise",
-        "mocha"
-    ],
-    "rules": {
-      "mocha/no-exclusive-tests": "error"
-    }
+        "promise"
+    ]
 }

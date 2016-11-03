@@ -1,12 +1,15 @@
 /* eslint no-console: "off" */
 
-const HAVE_I_BEEN_PWNED_API_URL = 'https://haveibeenpwned.com/api/v2/breachedaccount';
+const HAVE_I_BEEN_PWNED_API_URL = 'https://haveibeenpwned.com/api/v2/breachedaccount'
 
-const meow = require('meow');
-const axios = require('axios');
-const chalk = require('chalk');
+const meow = require('meow')
+const axios = require('axios')
+const chalk = require('chalk')
+const os = require('os')
+const path = require('path')
+const fs = require('fs')
 
-const Pwned = require('./Pwned.class');
+const Pwned = require('./Pwned.class')
 
 const cli = meow(`
   Usage
@@ -15,56 +18,99 @@ const cli = meow(`
   Options
     -e, --email Email address
 
-  Example
+  Examples
     $ node app.js -e test@example.com
 `, {
   alias: {
-    e: 'email',
-  },
-});
+    e: 'email'
+  }
+})
 
-
-function print(str, color) {
+function print (str, color) {
   switch (color) {
     case 'red':
-      console.info(chalk.red(str));
-      break;
+      console.info(chalk.red(str))
+      break
     case 'green':
-      console.info(chalk.green(str));
-      break;
+      console.info(chalk.green(str))
+      break
     default:
-      console.info(str);
+      console.info(str)
   }
 }
 
-function printReport(data) {
+function printReport (data) {
   print(`
   Pwned report for ${cli.flags.e}
   -------------------------------
-  `);
+  `)
 
-  const pwneds = data.map(item => new Pwned(item));
+  const pwneds = data.map(item => new Pwned(item))
 
   pwneds.forEach((obj) => {
-    print('');
-    print(`Host: ${obj.host}`);
-    print(`Breach Date: ${obj.breachDate}`);
-    print(`Password compromised: ${obj.isPasswordCompromised}`, obj.isPasswordCompromised ? 'red' : 'green');
-    print(`Password hints compromised: ${obj.isPasswordHintsCompromised}`, obj.isPasswordHintsCompromised ? 'red' : 'green');
-    print(`Report: ${obj.description}`);
-  });
+    print('')
+    print(`Host: ${obj.host}`)
+    print(`Breach Date: ${obj.breachDate}`)
+    print(`Password compromised: ${obj.isPasswordCompromised}`, obj.isPasswordCompromised ? 'red' : 'green')
+    print(`Password hints compromised: ${obj.isPasswordHintsCompromised}`, obj.isPasswordHintsCompromised ? 'red' : 'green')
+    print(`Report: ${obj.description}`)
+  })
 
-  print('-------------------------------');
+  print('-------------------------------')
 }
+
+function loadConfigFile (configDirPath, filename) {
+  let config
+  try {
+    config = fs.readFileSync(path.join(configDirPath, filename), 'utf8')
+  } catch (e) {
+    if (e.errno === -2) {
+      config = createConfigfile(configDirPath, filename)
+    } else {
+      console.error('There was an error reading the config file', e)
+    }
+  }
+
+  return config
+}
+
+function createConfigfile (configDirPath, filename) {
+  const config = [
+    {
+      email: cli.flags.email,
+      lastChecked: null
+    }
+  ]
+
+  try {
+    fs.mkdirSync(configDirPath)
+  } catch (e) {
+    console.error('There was an error creating the config directory', e)
+  }
+
+  try {
+    fs.writeFileSync(path.join(configDirPath, filename), JSON.stringify(config))
+  } catch (e) {
+    console.error('There was an error creating the config file', e)
+
+    process.exit(e.errno)
+  }
+
+  return config
+}
+
+const homedir = os.homedir()
+const config = loadConfigFile(path.join(homedir, '/.pwned-checker'), 'config.json')
+console.log(config)
+process.exit()
 
 axios.get(`${HAVE_I_BEEN_PWNED_API_URL}/${cli.flags.e}`)
   .then((res) => {
-    printReport(res.data);
+    printReport(res.data)
   })
   .catch((err) => {
-    console.error('There was an error with getting the pwned information', err);
-  });
-
+    console.error('There was an error with getting the pwned information', err)
+  })
 
 /*
 Pwned report for test@example.com
