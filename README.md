@@ -17,7 +17,8 @@ This will be a terminal based application where you give your email address and 
 *   [x] generate a report
 *   [x] print out report
 *   [x] tests
-*   [ ] If date is provided, only show pwneds since that date
+*   [x] If date is provided, only show pwneds since that date
+*   [ ] Bug, new email addresses cause error :(
 
 ## What the report will look like
 

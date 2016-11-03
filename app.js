@@ -9,6 +9,7 @@ const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const moment = require('moment')
+const _ = require('lodash')
 
 const Pwned = require('./Pwned.class')
 
@@ -77,18 +78,24 @@ function loadConfigFile (configDirPath, filename) {
   return config
 }
 
-function createConfigfile (configDirPath, filename) {
-  const config = [
-    {
-      email: cli.flags.email,
-      lastChecked: null
-    }
-  ]
+function createConfigfile (configDirPath, filename, config) {
+  if (!config) {
+    config = [
+      {
+        email: cli.flags.email,
+        lastChecked: null
+      }
+    ]
+  }
 
   try {
     fs.mkdirSync(configDirPath)
   } catch (e) {
-    console.error('There was an error creating the config directory', e)
+    if (e.errno !== -17) {
+      console.error('There was an error creating the config directory', e)
+
+      process.exit(e.errno)
+    }
   }
 
   try {
@@ -102,12 +109,23 @@ function createConfigfile (configDirPath, filename) {
   return config
 }
 
+function updateConfig (config, email) {
+  return config.map((obj) => {
+    if (obj.email === email) obj.lastChecked = moment().valueOf()
+
+    return obj
+  })
+}
+
 const homedir = os.homedir()
 const config = JSON.parse(loadConfigFile(path.join(homedir, '/.pwned-checker'), 'config.json'))
+const configForEmail = _.find(config, {email: cli.flags.email})
 
 axios.get(`${HAVE_I_BEEN_PWNED_API_URL}/${cli.flags.e}`)
   .then((res) => {
-    printReport(res.data, config)
+    printReport(res.data, configForEmail)
+
+    createConfigfile(path.join(homedir, '/.pwned-checker'), 'config.json', updateConfig(config, cli.flags.email))
   })
   .catch((err) => {
     console.error('There was an error with getting the pwned information', err)
