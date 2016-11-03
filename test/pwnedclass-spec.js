@@ -24,6 +24,7 @@ describe('Pwned class', () => {
     pwned.isPasswordCompromised.should.be.true
     pwned.isPasswordHintsCompromised.should.be.true
     pwned.description.should.be.equal('In October 2013, 153 million Adobe accounts were breached with each containing an internal ID, username, email, encrypted password and a password hint in plain text. The password cryptography was poorly done and (http://stricture-group.com/files/adobe-top100.txt) many were quickly resolved back to plain text. The unencrypted hints also (http://www.troyhunt.com/2013/11/adobe-credentials-and-serious.html) disclosed much about the passwords adding further to the risk that hundreds of millions of Adobe customers already faced.')
+    pwned.addedDateRaw.valueOf().should.be.a('number')
   })
 
   it('The clean method should strip html including quotes', () => {

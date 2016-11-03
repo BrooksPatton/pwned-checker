@@ -8,6 +8,7 @@ const chalk = require('chalk')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
+const moment = require('moment')
 
 const Pwned = require('./Pwned.class')
 
@@ -39,22 +40,24 @@ function print (str, color) {
   }
 }
 
-function printReport (data) {
+function printReport (data, config) {
+  const lastChecked = moment(config.lastChecked ? config.lastChecked : 0)
+
   print(`
   Pwned report for ${cli.flags.e}
   -------------------------------
   `)
 
-  const pwneds = data.map(item => new Pwned(item))
-
-  pwneds.forEach((obj) => {
-    print('')
-    print(`Host: ${obj.host}`)
-    print(`Breach Date: ${obj.breachDate}`)
-    print(`Password compromised: ${obj.isPasswordCompromised}`, obj.isPasswordCompromised ? 'red' : 'green')
-    print(`Password hints compromised: ${obj.isPasswordHintsCompromised}`, obj.isPasswordHintsCompromised ? 'red' : 'green')
-    print(`Report: ${obj.description}`)
-  })
+  data.map(item => new Pwned(item))
+    .filter(obj => lastChecked - obj.addedDateRaw <= 0)
+    .forEach((obj) => {
+      print('')
+      print(`Host: ${obj.host}`)
+      print(`Breach Date: ${obj.breachDate}`)
+      print(`Password compromised: ${obj.isPasswordCompromised}`, obj.isPasswordCompromised ? 'red' : 'green')
+      print(`Password hints compromised: ${obj.isPasswordHintsCompromised}`, obj.isPasswordHintsCompromised ? 'red' : 'green')
+      print(`Report: ${obj.description}`)
+    })
 
   print('-------------------------------')
 }
@@ -100,13 +103,11 @@ function createConfigfile (configDirPath, filename) {
 }
 
 const homedir = os.homedir()
-const config = loadConfigFile(path.join(homedir, '/.pwned-checker'), 'config.json')
-console.log(config)
-process.exit()
+const config = JSON.parse(loadConfigFile(path.join(homedir, '/.pwned-checker'), 'config.json'))
 
 axios.get(`${HAVE_I_BEEN_PWNED_API_URL}/${cli.flags.e}`)
   .then((res) => {
-    printReport(res.data)
+    printReport(res.data, config)
   })
   .catch((err) => {
     console.error('There was an error with getting the pwned information', err)
