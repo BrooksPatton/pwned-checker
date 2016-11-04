@@ -119,7 +119,16 @@ function updateConfig (config, email) {
 
 const homedir = os.homedir()
 const config = JSON.parse(loadConfigFile(path.join(homedir, '/.pwned-checker'), 'config.json'))
-const configForEmail = _.find(config, {email: cli.flags.email})
+let configForEmail = _.find(config, {email: cli.flags.email})
+
+if (!configForEmail) {
+  configForEmail = {
+    email: cli.flags.email,
+    lastChecked: null
+  }
+
+  config.push(configForEmail)
+}
 
 axios.get(`${HAVE_I_BEEN_PWNED_API_URL}/${cli.flags.e}`)
   .then((res) => {
