@@ -1,8 +1,7 @@
 {
   "name": "pwned-checker",
-  "version": "0.0.1",
-  "description": "A command line tool to check if an email address has been pwned. Uses the https://haveibeenpwned.com/ api",
-  "main": "app.js",
+  "version": "1.0.0",
+  "description": "A command line tool to check if an email address has been pwned. Uses the https://haveibeenpwned.com/ api.",
   "scripts": {
     "test": "nyc mocha test"
   },
@@ -31,5 +30,13 @@
     "eslint-plugin-standard": "^2.0.1",
     "mocha": "^3.1.2",
     "nyc": "^8.3.2"
+  },
+  "keywords": [
+    "pwned",
+    "compromised",
+    "haveibeenpwned"
+  ],
+  "bin": {
+    "pwned-checker": "./app.js"
   }
 }
